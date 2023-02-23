@@ -38,6 +38,4 @@ func (repositorio usuarios) Criar(usuario model.Usuario) (uint64, error) {
 	}
 
 	return uint64(ID), nil
-
-	return 0, nil
 }
