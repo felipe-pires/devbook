@@ -25,12 +25,12 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var usuario model.Usuario
-	if erro = usuario.Prepapar(); erro != nil {
+	if erro = json.Unmarshal(body, &usuario); erro != nil {
 		responses.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
 
-	if erro = json.Unmarshal(body, &usuario); erro != nil {
+	if erro = usuario.Prepapar(); erro != nil {
 		responses.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
