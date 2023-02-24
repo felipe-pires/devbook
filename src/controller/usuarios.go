@@ -6,7 +6,6 @@ import (
 	"api/src/repository"
 	"api/src/responses"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -20,17 +19,6 @@ const (
 func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	body, erro := ioutil.ReadAll(r.Body)
 
-	//tipo := r.URL.Query().Get("nome")
-
-	switch r.URL.Query().Get("nome") {
-	case totalMessagesByOrigin:
-		fmt.Println("totalMessagesByOrigin")
-	case totalContextsByOrigin:
-		fmt.Println("totalContextsByOrigin")
-	default:
-		fmt.Println("totalMessagesByOrigin")
-	}
-
 	if erro != nil {
 		responses.Erro(w, http.StatusUnprocessableEntity, erro)
 		return
@@ -39,16 +27,19 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	var usuario model.Usuario
 	if erro = usuario.Prepapar(); erro != nil {
 		responses.Erro(w, http.StatusBadRequest, erro)
+		return
 	}
 
 	if erro = json.Unmarshal(body, &usuario); erro != nil {
 		responses.Erro(w, http.StatusBadRequest, erro)
+		return
 	}
 
 	db, erro := banco.Conectar()
 
 	if erro != nil {
 		responses.Erro(w, http.StatusInternalServerError, erro)
+		return
 	}
 	defer db.Close()
 
@@ -57,6 +48,7 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 
 	if erro != nil {
 		responses.Erro(w, http.StatusInternalServerError, erro)
+		return
 	}
 
 	responses.JSON(w, http.StatusCreated, usuario)
